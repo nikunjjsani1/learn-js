@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Event Form</title>
+</head>
+<style>
+
+form{
+  margin: 0 auto;
+  padding: 10px;
+  justify-content: center;
+  display:  flex;
+  text-align: center;
+}
+.event{
+  justify-content: center;
+  display: flex;
+}
+ul{
+  text-align: center;
+  list-style: none;
+}
+
+</style>
+<body>
+  <form id="eventForm">
+    <label class="event">Event Name:</label>
+    <input type="text" id="eventName" required>
+    <button type="submit">Add Event</button>
+  </form>
+
+  <h2 class="event">Events:</h2>
+  <ul id="eventList"></ul>
+
+  <script>
+  let events = JSON.parse(localStorage.getItem('events')) || [];
+
+  
+    function updateEventList() {
+      const eventList = document.getElementById('eventList');
+      eventList.innerHTML = events.map((event, index) => `<li>${event} <button onclick="removeEvent(${index})">Remove</button></li>`).join('');
+    }
+
+    function addEvent(event) {
+      events.push(event);
+      localStorage.setItem('events', JSON.stringify(events));
+      updateEventList();
+    }
+
+    function removeEvent(index) {
+      events.splice(index, 1);
+      localStorage.setItem('events', JSON.stringify(events));
+      updateEventList();
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const eventNameInput = document.getElementById('eventName');
+      const eventName = eventNameInput.value;
+      addEvent(eventName);
+      eventNameInput.value = '';
+    }
+
+    const eventForm = document.getElementById('eventForm');
+    eventForm.addEventListener('submit', handleFormSubmit);
+
+    updateEventList();
+  </script>
+</body>
+</html>
