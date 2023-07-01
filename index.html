@@ -1,70 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Event Form</title>
+  <title>Tip Calculator</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<style>
-
-form{
-  margin: 0 auto;
-  padding: 10px;
-  justify-content: center;
-  display:  flex;
-  text-align: center;
-}
-.event{
-  justify-content: center;
-  display: flex;
-}
-ul{
-  text-align: center;
-  list-style: none;
-}
-
-</style>
 <body>
-  <form id="eventForm">
-    <label class="event">Event Name:</label>
-    <input type="text" id="eventName" required>
-    <button type="submit">Add Event</button>
-  </form>
+  <h1>Tip Calculator</h1>
+  <div id="calculator">
+    <label for="billAmount">Bill Amount:</label>
+    <input type="number" id="billAmount" placeholder="Enter bill amount"> <br>
 
-  <h2 class="event">Events:</h2>
-  <ul id="eventList"></ul>
+    <label for="tipPercentage">Tip Percentage:</label>
+    <input type="number" id="tipPercentage" placeholder="Enter tip percentage"> <br>
+
+    <label for="numOfPeople">Number of People:</label>
+    <input type="number" id="numOfPeople" placeholder="Enter number of people"> <br>
+
+    <button onclick="calculateTip()">Calculate Tip</button>
+
+    <p id="tipAmount"></p>
+    <p id="totalAmount"></p>
+    <p id="amountPerPerson"></p>
+  </div>
 
   <script>
-  let events = JSON.parse(localStorage.getItem('events')) || [];
+  function calculateTip() {
+  var billAmount = parseFloat(document.getElementById('billAmount').value);
+  var tipPercentage = parseFloat(document.getElementById('tipPercentage').value);
+  var numOfPeople = parseInt(document.getElementById('numOfPeople').value);
 
-  
-    function updateEventList() {
-      const eventList = document.getElementById('eventList');
-      eventList.innerHTML = events.map((event, index) => `<li>${event} <button onclick="removeEvent(${index})">Remove</button></li>`).join('');
-    }
+  if (isNaN(billAmount) || isNaN(tipPercentage) || isNaN(numOfPeople)) {
+    alert('Please enter valid values.');
+    return;
+  }
 
-    function addEvent(event) {
-      events.push(event);
-      localStorage.setItem('events', JSON.stringify(events));
-      updateEventList();
-    }
+  var tipAmount = billAmount * (tipPercentage / 100);
+  var totalAmount = billAmount + tipAmount;
+  var amountPerPerson = totalAmount / numOfPeople;
 
-    function removeEvent(index) {
-      events.splice(index, 1);
-      localStorage.setItem('events', JSON.stringify(events));
-      updateEventList();
-    }
+  document.getElementById('tipAmount').innerHTML = 'Tip Amount: $ ' + tipAmount.toFixed(2);
+  document.getElementById('totalAmount').innerHTML = 'Total Amount: $ ' + totalAmount.toFixed(2);
+  document.getElementById('amountPerPerson').innerHTML = 'Amount per $ ' + amountPerPerson.toFixed(2);
+}
 
-    function handleFormSubmit(event) {
-      event.preventDefault();
-      const eventNameInput = document.getElementById('eventName');
-      const eventName = eventNameInput.value;
-      addEvent(eventName);
-      eventNameInput.value = '';
-    }
-
-    const eventForm = document.getElementById('eventForm');
-    eventForm.addEventListener('submit', handleFormSubmit);
-
-    updateEventList();
   </script>
 </body>
 </html>
